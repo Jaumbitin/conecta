@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Conecta — Servidor" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="br.com.conecta.server.ChatServer"/>
+    <module name="conecta"/>
+    <option name="PROGRAM_PARAMETERS" value="5050"/>
+    <method v="2"><option name="Make" enabled="true"/></method>
+  </configuration>
+</component>
