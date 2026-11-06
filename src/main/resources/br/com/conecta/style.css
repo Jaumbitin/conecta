@@ -1,32 +1,52 @@
-.root { -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-base: #192334; -fx-background: #101827; -fx-control-inner-background: #101827; -fx-text-fill: #e7edf6; }
-.label { -fx-text-fill: #e7edf6; }
-.sidebar { -fx-background-color: #111b2b; -fx-padding: 24 20; -fx-border-color: transparent #263246 transparent transparent; }
-.brand { -fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #78e1c3; }
-.eyebrow { -fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #8c9bb2; }
-.muted { -fx-text-fill: #94a4ba; -fx-font-size: 12px; }
-.connection { -fx-padding: 16 22; -fx-background-color: #172234; -fx-border-color: transparent transparent #29364a transparent; }
-.text-field { -fx-background-color: #0d1625; -fx-border-color: #33415a; -fx-border-radius: 7; -fx-background-radius: 7; -fx-padding: 10 12; -fx-text-fill: #eef4ff; -fx-prompt-text-fill: #8798b0; }
-.text-field:focused { -fx-border-color: #60d6b5; }
-.button { -fx-background-color: #28374e; -fx-text-fill: #e2eaf5; -fx-padding: 11 15; -fx-background-radius: 7; -fx-cursor: hand; }
-.button:hover { -fx-background-color: #374b67; }
-.button.primary { -fx-background-color: #69dfbf; -fx-text-fill: #092c2b; -fx-font-weight: bold; }
-.button.primary:hover { -fx-background-color: #97edd5; }
+
+.root { -fx-font-family: "Segoe UI"; -fx-font-size: 13px; -fx-base: #242529; -fx-background: #1c1d21; -fx-control-inner-background: #1c1d21; -fx-text-fill: #e4e4e7; -fx-accent: #727ce0; -fx-focus-color: #727ce0; -fx-faint-focus-color: #727ce020; }
+.label { -fx-text-fill: #e4e4e7; }
+.sidebar { -fx-background-color: #202125; -fx-padding: 25 16 22 16; -fx-border-color: transparent #303137 transparent transparent; }
+.brand { -fx-font-size: 27px; -fx-font-weight: bold; -fx-text-fill: #f4f4f5; }
+.eyebrow { -fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #83848e; }
+.muted { -fx-text-fill: #92939e; -fx-font-size: 11px; }
+.connection { -fx-padding: 12 18; -fx-background-color: #25262b; -fx-border-color: transparent transparent #36373f transparent; }
+.connection .label { -fx-text-fill: #b0b0b9; -fx-font-size: 11px; }
+.text-field { -fx-background-color: #1c1d21; -fx-border-color: #3b3c44; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10 12; -fx-text-fill: #f1f1f3; -fx-prompt-text-fill: #747680; }
+.text-field:focused { -fx-border-color: #727ce0; }
+.button { -fx-background-color: #32333b; -fx-text-fill: #d0d0d8; -fx-padding: 10 13; -fx-background-radius: 5; -fx-cursor: hand; }
+.button:hover { -fx-background-color: #41424c; }
+.button:focused { -fx-border-color: #8f97e3; -fx-border-radius: 5; }
+.button.primary { -fx-background-color: #626ccc; -fx-text-fill: white; -fx-font-weight: bold; }
+.button.primary:hover { -fx-background-color: #7982da; }
+.button.subtle { -fx-background-color: transparent; -fx-text-fill: #a4a4b0; -fx-border-color: #3a3b43; -fx-border-radius: 5; }
 .list-view { -fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0; }
-.list-cell { -fx-background-color: transparent; -fx-text-fill: #acbbce; -fx-padding: 12 10; -fx-background-radius: 7; }
-.list-cell:filled:selected { -fx-background-color: #253e48; -fx-text-fill: #8af0d0; }
-.list-cell:filled:hover { -fx-background-color: #24334a; }
-.chat-header { -fx-padding: 25 28; -fx-background-color: #141f30; -fx-border-color: transparent transparent #263246 transparent; }
-.room-title { -fx-font-size: 24px; -fx-font-weight: bold; }
-.feed, .feed > .viewport { -fx-background-color: #0e1726; }
+.list-cell { -fx-background-color: transparent; -fx-text-fill: #a3a4ad; -fx-padding: 9 11; -fx-background-radius: 5; }
+.list-cell:filled:selected { -fx-background-color: #36394d; -fx-text-fill: #e7e8fb; }
+.list-cell:filled:hover { -fx-background-color: #2c2d34; }
+.chat-header { -fx-padding: 20 26; -fx-background-color: #242529; -fx-border-color: transparent transparent #33343b transparent; }
+.room-title { -fx-font-size: 20px; -fx-font-weight: bold; }
+.feed,.feed > .viewport { -fx-background-color: #1c1d21; }
 .scroll-pane { -fx-padding: 0; -fx-background-insets: 0; }
-.composer { -fx-background-color: #141f30; -fx-padding: 16 22 20 22; }
-.composer > .label { -fx-font-size: 11px; -fx-text-fill: #8394ad; }
-.people { -fx-background-color: #111b2b; -fx-padding: 30 16; -fx-border-color: transparent transparent transparent #263246; }
-.bubble, .bubble-own { -fx-padding: 15 18; -fx-background-radius: 12; -fx-background-color: #1d2b40; }
-.bubble-own { -fx-background-color: #21483f; }
-.author { -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #8ce2c9; }
-.system-message { -fx-font-size: 11px; -fx-text-fill: #8294ad; -fx-padding: 4 0; }
-.welcome { -fx-padding: 35 24; -fx-spacing: 16; -fx-background-color: #18283b; -fx-background-radius: 14; }
-.welcome-title { -fx-font-size: 26px; -fx-font-weight: bold; }
+.composer { -fx-background-color: #1c1d21; -fx-padding: 14 24 18 24; -fx-border-color: #2c2d32 transparent transparent transparent; }
+.composer > .label { -fx-font-size: 10px; -fx-text-fill: #777983; }
+.composer .text-field { -fx-background-color: #25262b; -fx-padding: 13 14; }
+.people { -fx-background-color: #202125; -fx-padding: 25 12; -fx-border-color: transparent transparent transparent #303137; }
+.people .list-cell { -fx-padding: 8 0; }
+.people .list-cell .label { -fx-font-size: 11px; -fx-text-fill: #b9bac2; }
+.message-row { -fx-padding: 10 0; }
+.message-row:hover { -fx-background-color: #222328; }
+.bubble,.bubble-own { -fx-padding: 0 4 4 0; -fx-background-color: transparent; }
+.bubble .label,.bubble-own .label { -fx-text-fill: #d0d0d8; -fx-line-spacing: 3; }
+.bubble .author,.bubble-own .author { -fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #eeeef2; }
+.bubble .message-time,.bubble-own .message-time { -fx-font-size: 10px; -fx-text-fill: #797b87; }
+.avatar,.avatar-own,.avatar-small { -fx-background-color: #514960; -fx-background-radius: 7; -fx-text-fill: #f0e9fb; -fx-font-weight: bold; -fx-alignment: center; -fx-min-width: 34; -fx-min-height: 34; -fx-max-width: 34; -fx-max-height: 34; }
+.avatar-own { -fx-background-color: #3f5264; -fx-text-fill: #e2edf9; }
+.avatar-small { -fx-min-width: 25; -fx-min-height: 25; -fx-max-width: 25; -fx-max-height: 25; -fx-background-radius: 5; }
+.system-message { -fx-font-size: 10px; -fx-text-fill: #777983; -fx-padding: 6 0 6 46; }
+.welcome { -fx-padding: 30 20; -fx-spacing: 16; }
+.welcome-symbol { -fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: #9b9dc2; -fx-background-color: #2b2c38; -fx-background-radius: 16; -fx-padding: 6 19; }
+.welcome-title { -fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: #eeeef1; }
+.welcome-copy { -fx-text-fill: #999aa6; -fx-line-spacing: 5; }
+.welcome-step { -fx-text-fill: #c0c1cc; -fx-font-size: 12px; }
+.separator .line { -fx-border-color: #35363f; -fx-border-width: .5; }
 .scroll-bar { -fx-background-color: transparent; }
-.scroll-bar .thumb { -fx-background-color: #35455b; -fx-background-radius: 8; }
+.scroll-bar .thumb { -fx-background-color: #41424b; -fx-background-radius: 8; }
+.dialog-pane { -fx-background-color: #242529; -fx-padding: 24; }
+.dialog-pane:header .header-panel { -fx-background-color: #242529; }
+.dialog-pane:header .header-panel .label { -fx-font-size: 22px; -fx-font-weight: bold; }

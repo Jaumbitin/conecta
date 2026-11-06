@@ -19,12 +19,13 @@ import java.util.concurrent.*;
 public final class ChatApplication extends Application {
     private final ExecutorService io = Executors.newSingleThreadExecutor(Thread.ofVirtual().factory());
     private final ListView<String> rooms = new ListView<>(), members = new ListView<>();
-    private final VBox feed = new VBox(14);
+    private final VBox feed = new VBox(5);
     private final ScrollPane scroll = new ScrollPane(feed);
     private final Label status = new Label("Desconectado"), roomTitle = new Label("# geral"), identity = new Label("Seu espaço de conversa"), notice = new Label();
     private final TextField input = new TextField(), host = new TextField("localhost"), port = new TextField("5050"), name = new TextField();
     private final Button connect = new Button("Conectar"), attach = new Button("Anexar arquivo"), send = new Button("Enviar →"), newRoom = new Button("+ Nova sala"), serverButton = new Button("Iniciar servidor local");
     private Stage stage;
+    private HBox connection;
     private ChatClient client;
     private ChatServer localServer;
     private String activeRoom = "geral", username;
@@ -33,10 +34,10 @@ public final class ChatApplication extends Application {
 
     @Override public void start(Stage stage) {
         this.stage = stage; stage.setTitle("Conecta • Conversas em rede");
-        Label brand = new Label("◉  conecta"); brand.getStyleClass().add("brand");
-        Label subtitle = new Label("PESSOAS. IDEIAS. CONEXÕES."); subtitle.getStyleClass().add("eyebrow");
-        VBox logo = new VBox(8, brand, subtitle); logo.setPadding(new Insets(8, 0, 24, 0));
-        Label roomLabel = new Label("SUAS SALAS"); roomLabel.getStyleClass().add("eyebrow");
+        Label brand = new Label("conecta"); brand.getStyleClass().add("brand");
+        Label subtitle = new Label("ESPAÇO DE CONVERSAS"); subtitle.getStyleClass().add("eyebrow");
+        VBox logo = new VBox(8, brand, subtitle); logo.setPadding(new Insets(8, 0, 20, 0));
+        Label roomLabel = new Label("SALAS"); roomLabel.getStyleClass().add("eyebrow");
         rooms.getItems().add("geral"); rooms.getSelectionModel().selectFirst();
         rooms.setCellFactory(v -> new ListCell<>() { @Override protected void updateItem(String s, boolean empty) { super.updateItem(s, empty); setText(empty ? null : "#  " + s); } });
         rooms.getSelectionModel().selectedItemProperty().addListener((o, old, room) -> {
@@ -46,44 +47,64 @@ public final class ChatApplication extends Application {
             }
         });
         newRoom.setMaxWidth(Double.MAX_VALUE); newRoom.setOnAction(e -> createRoom());
-        Label tip = new Label("Um lugar para conversar\ne compartilhar com seu grupo."); tip.getStyleClass().add("muted");
+        Label tip = new Label("Arquivos de até 10 MB"); tip.getStyleClass().add("muted");
         Region spacer = new Region(); VBox.setVgrow(spacer, Priority.ALWAYS);
-        VBox sidebar = new VBox(16, logo, roomLabel, rooms, newRoom, spacer, identity, status, tip);
-        sidebar.getStyleClass().add("sidebar"); sidebar.setPrefWidth(240); sidebar.setMinWidth(220); VBox.setVgrow(rooms, Priority.ALWAYS);
+        VBox sidebar = new VBox(14, logo, roomLabel, newRoom, rooms, spacer, identity, status, tip);
+        sidebar.getStyleClass().add("sidebar"); sidebar.setPrefWidth(224); sidebar.setMinWidth(224); VBox.setVgrow(rooms, Priority.ALWAYS);
 
         roomTitle.getStyleClass().add("room-title");
-        Label desc = new Label("Converse, troque ideias e compartilhe arquivos."); desc.getStyleClass().add("muted");
+        Label desc = new Label("Mensagens e arquivos compartilhados nesta sala"); desc.getStyleClass().add("muted");
         VBox heading = new VBox(5, roomTitle, desc);
-        HBox header = new HBox(heading); header.getStyleClass().add("chat-header");
-        feed.setPadding(new Insets(26)); scroll.setFitToWidth(true); scroll.getStyleClass().add("feed");
+        Region headerGap = new Region(); HBox.setHgrow(headerGap, Priority.ALWAYS);
+        Button settings = new Button("Conexão"); settings.getStyleClass().add("subtle");
+        settings.setOnAction(e -> { boolean show = !connection.isVisible(); connection.setVisible(show); connection.setManaged(show); });
+        HBox header = new HBox(heading, headerGap, settings); header.setAlignment(Pos.CENTER_LEFT); header.getStyleClass().add("chat-header");
+        feed.setPadding(new Insets(20,24,24,24)); scroll.setFitToWidth(true); scroll.getStyleClass().add("feed");
         feed.heightProperty().addListener((o, a, b) -> scroll.setVvalue(1));
         input.setPromptText("Escreva uma mensagem…"); input.setOnAction(e -> sendText()); HBox.setHgrow(input, Priority.ALWAYS);
         send.getStyleClass().add("primary"); send.setOnAction(e -> sendText()); attach.setOnAction(e -> sendFile());
         HBox composer = new HBox(10, attach, input, send); composer.setAlignment(Pos.CENTER);
         notice.getStyleClass().add("muted"); notice.setWrapText(true);
-        VBox bottom = new VBox(10, notice, composer, new Label("Enter para enviar  •  Arquivos de até 10 MB  •  Salas públicas")); bottom.getStyleClass().add("composer");
+        VBox bottom = new VBox(10, notice, composer, new Label("Enter para enviar · As mensagens ficam disponíveis durante esta sessão")); bottom.getStyleClass().add("composer");
         BorderPane chat = new BorderPane(scroll, header, null, bottom, null);
-        Label people = new Label("NESTA SALA"); people.getStyleClass().add("eyebrow");
-        members.setPlaceholder(new Label("Ninguém conectado"));
-        VBox right = new VBox(18, people, members); right.getStyleClass().add("people"); right.setPrefWidth(190); VBox.setVgrow(members, Priority.ALWAYS);
+        Label people = new Label("PARTICIPANTES"); people.getStyleClass().add("eyebrow");
+        members.setPlaceholder(new Label("Nenhum participante"));
+        members.setCellFactory(v -> new ListCell<>() {
+            protected void updateItem(String person, boolean empty) {
+                super.updateItem(person, empty); setText(null); setGraphic(null);
+                if (!empty && person != null) {
+                    Label initial = new Label(person.substring(0,1).toUpperCase(Locale.ROOT)); initial.getStyleClass().add("avatar-small");
+                    Label label = new Label(person); label.setMaxWidth(100); label.setTextOverrun(OverrunStyle.ELLIPSIS);
+                    HBox cell = new HBox(9, initial, label); cell.setAlignment(Pos.CENTER_LEFT); setGraphic(cell);
+                }
+            }
+        });
+        VBox right = new VBox(18, people, members); right.getStyleClass().add("people"); right.setPrefWidth(174); VBox.setVgrow(members, Priority.ALWAYS);
 
         host.setPrefColumnCount(13); port.setPrefColumnCount(4); name.setPrefColumnCount(11); name.setPromptText("Seu nome");
         connect.getStyleClass().add("primary"); connect.setOnAction(e -> { if (client == null) connect(); else disconnect(); });
         serverButton.setOnAction(e -> toggleServer());
-        HBox connection = new HBox(10, new Label("Servidor"), host, new Label("Porta"), port, name, connect, serverButton);
+        connection = new HBox(10, new Label("Servidor"), host, new Label("Porta"), port, name, connect, serverButton);
         connection.setAlignment(Pos.CENTER_LEFT); connection.getStyleClass().add("connection");
         BorderPane root = new BorderPane(chat, connection, right, null, sidebar);
         Scene scene = new Scene(root, 1190, 780);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/br/com/conecta/style.css")).toExternalForm());
-        stage.setScene(scene); stage.setMinWidth(1050); stage.setMinHeight(650); stage.show();
+        stage.setScene(scene); stage.setMinWidth(1120); stage.setMinHeight(650); stage.show();
         enabled(false); welcome();
     }
     private void welcome() {
-        Label title = new Label("Boas conversas começam aqui."); title.getStyleClass().add("welcome-title");
-        Label body = new Label("Escolha um nome e conecte-se ao servidor.\nPara testar neste computador, clique em Iniciar servidor local.\nDepois, abra outra instância do Conecta com um nome diferente."); body.setWrapText(true); body.getStyleClass().add("muted");
-        VBox card = new VBox(14, new Label("BEM-VINDO AO CONECTA"), title, body); card.getStyleClass().add("welcome"); feed.getChildren().setAll(card);
+        Label symbol = new Label("#"); symbol.getStyleClass().add("welcome-symbol");
+        Label title = new Label("Sua próxima conversa começa aqui"); title.getStyleClass().add("welcome-title");
+        Label body = new Label("Escolha um nome e conecte-se para conversar com seu grupo.\nVocê também pode iniciar um servidor neste computador."); body.setWrapText(true); body.getStyleClass().add("welcome-copy");
+        Label step1 = new Label("01   Preencha seu nome na barra de conexão");
+        Label step2 = new Label("02   Entre em um servidor ou inicie o seu");
+        Label step3 = new Label("03   Crie uma sala e compartilhe a conversa");
+        for (Label step : new Label[]{step1,step2,step3}) step.getStyleClass().add("welcome-step");
+        VBox card = new VBox(16, symbol,title,body,new Separator(),step1,step2,step3);
+        card.getStyleClass().add("welcome"); card.setMaxWidth(560); feed.getChildren().setAll(card);
     }
     private void enabled(boolean connected) {
+        if (connected) { connection.setVisible(false); connection.setManaged(false); }
         input.setDisable(!connected); send.setDisable(!connected); attach.setDisable(!connected); newRoom.setDisable(!connected); rooms.setDisable(!connected);
         host.setDisable(connected); port.setDisable(connected); name.setDisable(connected);
         connect.setText(connected ? "Desconectar" : "Conectar"); status.setText(connected ? "● Online" : "○ Desconectado");
@@ -112,7 +133,7 @@ public final class ChatApplication extends Application {
         } catch (Exception e) { error("Servidor: " + e.getMessage()); }
     }
     private void createRoom() {
-        TextInputDialog dialog = new TextInputDialog(); dialog.initOwner(stage); dialog.setTitle("Nova sala"); dialog.setHeaderText("Qual é o nome do grupo?"); dialog.setContentText("Nome da sala:");
+        TextInputDialog dialog = new TextInputDialog(); dialog.initOwner(stage); dialog.getDialogPane().getStylesheets().add(stage.getScene().getStylesheets().getFirst()); dialog.setTitle("Nova sala"); dialog.setHeaderText("Qual é o nome do grupo?"); dialog.setContentText("Nome da sala:");
         dialog.showAndWait().filter(s -> !s.isBlank()).ifPresent(s -> submit(Packet.of("JOIN", s, "", "")));
     }
     private void sendText() {
@@ -149,9 +170,11 @@ public final class ChatApplication extends Application {
     private void addMessage(Packet p) {
         if (p.type().equals("SYSTEM")) { Label l = new Label(p.text()); l.getStyleClass().add("system-message"); feed.getChildren().add(l); trim(); return; }
         String time = DateTimeFormatter.ofPattern("HH:mm").format(Instant.ofEpochMilli(p.time()).atZone(ZoneId.systemDefault()));
-        Label author = new Label(p.sender() + "   ·   " + time); author.getStyleClass().add("author");
-        VBox bubble = new VBox(9, author); bubble.setMaxWidth(550); bubble.getStyleClass().add(p.sender().equals(username) ? "bubble-own" : "bubble");
-        if (p.type().equals("TEXT")) { Label text = new Label(p.text()); text.setWrapText(true); text.setMaxWidth(510); bubble.getChildren().add(text); }
+        Label author = new Label(p.sender()); author.getStyleClass().add("author");
+        Label stamp = new Label(time); stamp.getStyleClass().add("message-time");
+        HBox metadata = new HBox(10, author, stamp); metadata.setAlignment(Pos.CENTER_LEFT);
+        VBox bubble = new VBox(6, metadata); bubble.setMaxWidth(Double.MAX_VALUE); bubble.getStyleClass().add(p.sender().equals(username) ? "bubble-own" : "bubble");
+        if (p.type().equals("TEXT")) { Label text = new Label(p.text()); text.setWrapText(true); text.setMaxWidth(Double.MAX_VALUE); bubble.getChildren().add(text); }
         else {
             Label file = new Label("▤  " + p.text() + "  ·  " + String.format(Locale.ROOT, "%.1f KB", p.data().length / 1024.0)); file.setWrapText(true);
             Button save = new Button("Preparando arquivo…"); save.setDisable(true); bubble.getChildren().addAll(file, save);
@@ -162,7 +185,8 @@ public final class ChatApplication extends Application {
                 } catch (IOException e) { Platform.runLater(() -> save.setText("Falha ao receber arquivo")); }
             });
         }
-        HBox row = new HBox(bubble); row.setAlignment(p.sender().equals(username) ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT); feed.getChildren().add(row); trim();
+        Label avatar = new Label(p.sender().substring(0,1).toUpperCase(Locale.ROOT)); avatar.getStyleClass().add(p.sender().equals(username) ? "avatar-own" : "avatar");
+        HBox row = new HBox(12, avatar, bubble); row.setAlignment(Pos.TOP_LEFT); row.getStyleClass().add("message-row"); HBox.setHgrow(bubble,Priority.ALWAYS); feed.getChildren().add(row); trim();
     }
     private void trim() { if (feed.getChildren().size() > 200) feed.getChildren().remove(0); }
     private void saveFile(Path source, String filename) {

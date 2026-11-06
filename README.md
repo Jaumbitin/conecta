@@ -48,3 +48,9 @@ As salas são públicas, sem contas ou senhas. A conexão TCP não possui TLS: e
 Limites: 100 conexões, 50 salas por servidor, nomes de até 32 caracteres, mensagens de até 4000 caracteres e arquivos de até 10 MB. O arquivo completo é mantido em memória durante a transmissão; clientes lentos com a fila de saída cheia são desconectados. Arquivos temporários ocupam disco até encerrar o aplicativo. Não há histórico offline, transferência retomável ou conversas privadas nesta versão.
 
 A configuração Maven do JavaFX segue a [documentação oficial do OpenJFX](https://openjfx.io/openjfx-docs/).
+
+## Interface
+
+Veja as [decisões de interface](docs/DESIGN.md).
+
+![Conversa no Conecta, com dados de demonstração](docs/images/conversa.png)
