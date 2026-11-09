@@ -2,6 +2,14 @@
 
 Aplicativo desktop de bate-papo em **Java 21 + JavaFX**, com servidor TCP por sockets, salas de conversa em grupo e compartilhamento de arquivos de até 10 MB. Interface em português, tema escuro e operações de rede fora da thread gráfica.
 
+## Navegação
+
+- [Executar no IntelliJ IDEA](#executar-no-intellij-idea)
+- [Linha de comando](#linha-de-comando)
+- [Usar em rede local](#usar-em-rede-local)
+- [Organização](#organização)
+- [Escopo desta versão](#escopo-desta-versão)
+
 ## Executar no IntelliJ IDEA
 
 1. Abra esta pasta como projeto Maven e aguarde a importação do `pom.xml`.
